@@ -1,0 +1,93 @@
+CREATE DATABASE SQL_Homework
+
+USE SQL_Homework
+
+-- 1
+CREATE TABLE T_PERSON 
+(
+	id int NOT NULL,
+	last_name varchar(255) NOT NULL,
+	first_name varchar(255) NOT NULL,
+	address varchar(255) NOT NULL,
+	city varchar(255) NOT NULL
+
+	CONSTRAINT PK_ID PRIMARY KEY(id)
+)
+
+-- 2
+CREATE TABLE T_CAR
+(
+	id int NOT NULL UNIQUE,
+	brand varchar(255) NOT NULL,
+	model varchar(255) NOT NULL,
+	reg_number varchar(8) NOT NULL,
+	person_id int NOT NULL
+
+	CONSTRAINT PK_CAR_ID PRIMARY KEY(id)
+	CONSTRAINT FK_PERSON_ID FOREIGN KEY(person_id)
+		REFERENCES T_PERSON(id)
+)
+
+-- 3
+INSERT INTO T_PERSON(id, last_name, first_name, address, city)
+VALUES (1, 'Петров', 'Иван', 'бул. Цар Асен III 34', 'Пловдив'),
+       (2, 'Драганов', 'Петран', 'ул. Освобождение 122', 'Сливен'),
+	   (3, 'Стоилова', 'Ирина', 'ул. Иван Гарванов 1', 'Стара Загора'),
+       (4, 'Бакалов', 'Иван', 'ул. Трилистник 12', 'София'),
+	   (5, 'Стоянова', 'Катя', 'бул. Източен 84', 'Пловдив'),
+	   (6, 'Багов', 'Кирил', 'ул. Дрин 98', 'Велико Търново'),
+	   (7, 'Димитрова', 'Елена', 'ул. Родопи 36', 'София')
+
+-- 4
+INSERT INTO T_CAR(id, brand, model, reg_number, person_id)
+VALUES (1, 'Opel', 'Insignia', 'СА4772ВР', 4),
+	   (2, 'Fiat', 'Panda', 'РВ4483МК', 1),
+	   (3, 'Opel', 'Astra', 'ВТ3612АС', 6),
+	   (4, 'Ford', 'Fiesta', 'СТ7701ТС', 3),
+	   (5, 'Renault', 'Clio', 'СН5500ТХ', 2),
+	   (6, 'Audi', 'A8', 'С1204ОР', 7),
+	   (7, 'Toyota', 'Yaris', 'РВ1518НС', 1),
+	   (8, 'VW', 'Polo', 'РВ7733СХ', 5),
+	   (9, 'BMW', 'X5', 'СА7777МТ', 4),
+	   (10, 'Peugeot', '309', 'ВТ1875МТ', 6)
+
+-- 5 Напишете заявка, която да покаже всички записи от таблицата T_PERSON
+SELECT * FROM T_PERSON
+
+-- 6 Напишете заявка, която да покаже всички записи от таблицата T_CAR
+SELECT * FROM T_CAR
+
+-- 7 Напишете заявка, която да покаже запис с id=3 от таблицата T_CAR, като покаже само колоните brand, model, reg_number;
+SELECT brand, model, reg_number
+FROM T_CAR
+WHERE id = 3
+
+-- 8 Напишете заявка, която да покаже всички записи от таблицата T_PERSON, които имат стойност „Иван“ в полето first_name
+SELECT * FROM T_PERSON
+WHERE first_name = 'Иван'
+
+-- 9 Напишете заявка, която да покаже всички автомобили, които имат софийски регистрационен номер
+SELECT * FROM T_CAR
+WHERE reg_number LIKE 'С%'
+AND (reg_number NOT LIKE 'СТ%' 
+	AND reg_number NOT LIKE 'СН%'
+	AND reg_number NOT LIKE 'СС%'
+	AND reg_number NOT LIKE 'СМ%')
+
+-- 10 *Напишете заявка, която да покаже всички хора (first_name, last_name) и колите, които притежават (brand, model)
+SELECT P.first_name, P.last_name, C.brand, C.model FROM T_PERSON P, T_CAR C
+WHERE P.id = C.person_id
+ORDER BY P.first_name
+
+-- 11 *Напишете заявка, която да покаже first_name и last_name на всички хора, които имат коли, регистрирани в София
+SELECT DISTINCT P.first_name, P.last_name FROM T_PERSON P, T_CAR C
+WHERE C.reg_number LIKE 'С%'
+AND (C.reg_number NOT LIKE 'СТ%' 
+	AND C.reg_number NOT LIKE 'СН%'
+	AND C.reg_number NOT LIKE 'СС%'
+	AND C.reg_number NOT LIKE 'СМ%')
+AND P.id = C.person_id
+
+-- 12 *Напишете заявка, която да покаже всички автомобили, които имат цифрата 5 в регистрационния си номер
+SELECT brand, model, reg_number FROM T_CAR
+WHERE reg_number LIKE '%5%'
